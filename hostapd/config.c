@@ -2148,6 +2148,7 @@ struct hostapd_config * hostapd_config_read(const char *fname)
 				errors++;
 			}
 		} else if (os_strcmp(buf, "wps_pin_requests") == 0) {
+			os_free(bss->wps_pin_requests);
 			bss->wps_pin_requests = os_strdup(pos);
 		} else if (os_strcmp(buf, "device_name") == 0) {
 			if (os_strlen(pos) > 32) {
@@ -2155,6 +2156,7 @@ struct hostapd_config * hostapd_config_read(const char *fname)
 					   "device_name", line);
 				errors++;
 			}
+			os_free(bss->device_name);
 			bss->device_name = os_strdup(pos);
 		} else if (os_strcmp(buf, "manufacturer") == 0) {
 			if (os_strlen(pos) > 64) {
@@ -2162,6 +2164,7 @@ struct hostapd_config * hostapd_config_read(const char *fname)
 					   "manufacturer", line);
 				errors++;
 			}
+			os_free(bss->manufacturer);
 			bss->manufacturer = os_strdup(pos);
 		} else if (os_strcmp(buf, "model_name") == 0) {
 			if (os_strlen(pos) > 32) {
@@ -2169,6 +2172,7 @@ struct hostapd_config * hostapd_config_read(const char *fname)
 					   "model_name", line);
 				errors++;
 			}
+			os_free(bss->model_name);
 			bss->model_name = os_strdup(pos);
 		} else if (os_strcmp(buf, "model_number") == 0) {
 			if (os_strlen(pos) > 32) {
@@ -2176,6 +2180,7 @@ struct hostapd_config * hostapd_config_read(const char *fname)
 					   "model_number", line);
 				errors++;
 			}
+			os_free(bss->model_number);
 			bss->model_number = os_strdup(pos);
 		} else if (os_strcmp(buf, "serial_number") == 0) {
 			if (os_strlen(pos) > 32) {
@@ -2183,10 +2188,13 @@ struct hostapd_config * hostapd_config_read(const char *fname)
 					   "serial_number", line);
 				errors++;
 			}
+			os_free(bss->serial_number);
 			bss->serial_number = os_strdup(pos);
 		} else if (os_strcmp(buf, "device_type") == 0) {
+			os_free(bss->device_type);
 			bss->device_type = os_strdup(pos);
 		} else if (os_strcmp(buf, "config_methods") == 0) {
+			os_free(bss->config_methods);
 			bss->config_methods = os_strdup(pos);
 		} else if (os_strcmp(buf, "os_version") == 0) {
 			if (hexstr2bin(pos, bss->os_version, 4)) {
@@ -2195,7 +2203,20 @@ struct hostapd_config * hostapd_config_read(const char *fname)
 				errors++;
 			}
 		} else if (os_strcmp(buf, "ap_pin") == 0) {
+			os_free(bss->ap_pin);
 			bss->ap_pin = os_strdup(pos);
+		} else if (os_strcmp(buf, "skip_cred_build") == 0) {
+			bss->skip_cred_build = atoi(pos);
+		} else if (os_strcmp(buf, "extra_cred") == 0) {
+			os_free(bss->extra_cred);
+			bss->extra_cred =
+				(u8 *) os_readfile(pos, &bss->extra_cred_len);
+			if (bss->extra_cred == NULL) {
+				wpa_printf(MSG_ERROR, "Line %d: could not "
+					   "read Credentials from '%s'",
+					   line, pos);
+				errors++;
+			}
 #endif /* CONFIG_WPS */
 		} else {
 			wpa_printf(MSG_ERROR, "Line %d: unknown configuration "
