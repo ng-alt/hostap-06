@@ -95,6 +95,7 @@ static const char *ctrl_iface_dir = "/var/run/wpa_supplicant";
 static char *ctrl_ifname = NULL;
 static const char *pid_file = NULL;
 static const char *action_file = NULL;
+static int ping_interval = 5;
 
 
 static void print_help();
@@ -104,7 +105,8 @@ static void usage(void)
 {
 	printf("wpa_cli [-p<path to ctrl sockets>] [-i<ifname>] [-hvB] "
 	       "[-a<action file>] \\\n"
-	       "        [-P<pid file>] [-g<global ctrl>]  [command..]\n"
+	       "        [-P<pid file>] [-g<global ctrl>] [-G<ping interval>]  "
+	       "[command..]\n"
 	       "  -h = help (show this usage text)\n"
 	       "  -v = shown version information\n"
 	       "  -a = run in daemon mode executing the action file based on "
@@ -1563,7 +1565,7 @@ static void wpa_cli_interactive(void)
 	do {
 		wpa_cli_recv_pending(ctrl_conn, 0, 0);
 #ifndef CONFIG_NATIVE_WINDOWS
-		alarm(1);
+		alarm(ping_interval);
 #endif /* CONFIG_NATIVE_WINDOWS */
 #ifdef CONFIG_READLINE
 		cmd = readline("> ");
@@ -1667,7 +1669,7 @@ static void wpa_cli_action(struct wpa_ctrl *ctrl)
 	while (!wpa_cli_quit) {
 		FD_ZERO(&rfds);
 		FD_SET(fd, &rfds);
-		tv.tv_sec = 2;
+		tv.tv_sec = ping_interval;
 		tv.tv_usec = 0;
 		res = select(fd + 1, &rfds, NULL, NULL, &tv);
 		if (res < 0 && errno != EINTR) {
@@ -1721,7 +1723,7 @@ static void wpa_cli_alarm(int sig)
 		wpa_cli_reconnect();
 	if (ctrl_conn)
 		wpa_cli_recv_pending(ctrl_conn, 1, 0);
-	alarm(1);
+	alarm(ping_interval);
 }
 #endif /* CONFIG_NATIVE_WINDOWS */
 
@@ -1794,7 +1796,7 @@ int main(int argc, char *argv[])
 		return -1;
 
 	for (;;) {
-		c = getopt(argc, argv, "a:Bg:hi:p:P:v");
+		c = getopt(argc, argv, "a:Bg:G:hi:p:P:v");
 		if (c < 0)
 			break;
 		switch (c) {
@@ -1806,6 +1808,9 @@ int main(int argc, char *argv[])
 			break;
 		case 'g':
 			global = optarg;
+			break;
+		case 'G':
+			ping_interval = atoi(optarg);
 			break;
 		case 'h':
 			usage();
