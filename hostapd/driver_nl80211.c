@@ -1676,8 +1676,6 @@ static void handle_tx_callback(struct hostapd_data *hapd, u8 *buf, size_t len,
 			   ok ? "ACK" : "fail");
 		break;
 	case WLAN_FC_TYPE_DATA:
-		wpa_printf(MSG_DEBUG, "DATA (TX callback) %s",
-			   ok ? "ACK" : "fail");
 		sta = ap_get_sta(hapd, hdr->addr1);
 		if (sta && sta->flags & WLAN_STA_PENDING_POLL) {
 			wpa_printf(MSG_DEBUG, "STA " MACSTR " %s pending "
@@ -1728,6 +1726,9 @@ static void handle_frame(struct hostapd_iface *iface, u8 *buf, size_t len,
 		switch (fc & (WLAN_FC_FROMDS | WLAN_FC_TODS)) {
 		case WLAN_FC_TODS:
 			bssid = hdr->addr1;
+			break;
+		case WLAN_FC_FROMDS:
+			bssid = hdr->addr2;
 			break;
 		default:
 			/* discard */
