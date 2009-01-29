@@ -100,6 +100,7 @@ struct hostap_sta_driver_data {
 struct wpa_driver_ops;
 struct wpa_ctrl_dst;
 struct radius_server_data;
+struct upnp_wps_device_sm;
 
 #ifdef CONFIG_FULL_DYNAMIC_VLAN
 struct full_dynamic_vlan;
@@ -171,6 +172,7 @@ struct hostapd_data {
 	u8 *wps_probe_resp_ie;
 	size_t wps_probe_resp_ie_len;
 	unsigned int ap_pin_failures;
+	struct upnp_wps_device_sm *wps_upnp;
 #endif /* CONFIG_WPS */
 };
 
