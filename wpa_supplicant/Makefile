@@ -564,6 +564,7 @@ CFLAGS += -DEAP_TNC
 OBJS += ../src/eap_peer/eap_tnc.o
 OBJS += ../src/eap_peer/tncc.o
 NEED_BASE64=y
+LIBS += -ldl
 endif
 
 ifdef CONFIG_IEEE8021X_EAPOL

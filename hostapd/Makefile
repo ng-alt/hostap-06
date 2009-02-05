@@ -307,6 +307,7 @@ CFLAGS += -DEAP_TNC
 OBJS += ../src/eap_server/eap_tnc.o
 OBJS += ../src/eap_server/tncs.o
 NEED_BASE64=y
+LIBS += -ldl
 endif
 
 # Basic EAP functionality is needed for EAPOL
