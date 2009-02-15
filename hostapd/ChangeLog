@@ -1,6 +1,6 @@
 ChangeLog for hostapd
 
-????-??-?? - v0.6.8
+2009-02-15 - v0.6.8
 	* increased hostapd_cli ping interval to 5 seconds and made this
 	  configurable with a new command line options (-G<seconds>)
 	* driver_nl80211: use Linux socket filter to improve performance
