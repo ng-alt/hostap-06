@@ -3,6 +3,8 @@ ChangeLog for hostapd
 ????-??-?? - v0.6.9
 	* driver_nl80211: fixed STA accounting data collection (TX/RX bytes
 	  reported correctly; TX/RX packets not yet available from kernel)
+	* fixed EAPOL/EAP reauthentication when using an external RADIUS
+	  authentication server
 
 2009-02-15 - v0.6.8
 	* increased hostapd_cli ping interval to 5 seconds and made this
