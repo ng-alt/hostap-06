@@ -27,58 +27,69 @@
 	* defined(__DragonFly__) */
 
 
-struct wme_information_element {
-	/* required fields for WME version 1 */
-	u8 oui[3];
-	u8 oui_type;
-	u8 oui_subtype;
-	u8 version;
-	u8 acInfo;
+/*
+ * WMM Information Element (used in (Re)Association Request frames; may also be
+ * used in Beacon frames)
+ */
+struct wmm_information_element {
+	/* Element ID: 221 (0xdd); Length: 7 */
+	/* required fields for WMM version 1 */
+	u8 oui[3]; /* 00:50:f2 */
+	u8 oui_type; /* 2 */
+	u8 oui_subtype; /* 0 */
+	u8 version; /* 1 for WMM version 1.0 */
+	u8 qos_info; /* AP/STA specific QoS info */
 
 } __attribute__ ((packed));
 
-struct wme_ac_parameter {
+struct wmm_ac_parameter {
 #if __BYTE_ORDER == __LITTLE_ENDIAN
-	/* byte 1 */
+	/* byte 1: ACI/AIFSN */
 	u8 	aifsn:4,
 		acm:1,
-	 	aci:2,
-	 	reserved:1;
+		aci:2,
+		reserved:1;
 
-	/* byte 2 */
-	u8 	eCWmin:4,
-	 	eCWmax:4;
+	/* byte 2: ECWmin/ECWmax (CW = 2^ECW - 1) */
+	u8 	e_cw_min:4,
+		e_cw_max:4;
 #elif __BYTE_ORDER == __BIG_ENDIAN
-	/* byte 1 */
+	/* byte 1: ACI/AIFSN */
 	u8 	reserved:1,
-	 	aci:2,
-	 	acm:1,
-	 	aifsn:4;
+		aci:2,
+		acm:1,
+		aifsn:4;
 
-	/* byte 2 */
-	u8 	eCWmax:4,
-	 	eCWmin:4;
+	/* byte 2: ECWmin/ECWmax */
+	u8 	e_cw_max:4,
+		e_cw_min:4;
 #else
 #error	"Please fix <endian.h>"
 #endif
 
 	/* bytes 3 & 4 */
-	le16 txopLimit;
+	le16 txop_limit;
 } __attribute__ ((packed));
 
-struct wme_parameter_element {
-	/* required fields for WME version 1 */
-	u8 oui[3];
-	u8 oui_type;
-	u8 oui_subtype;
-	u8 version;
-	u8 acInfo;
-	u8 reserved;
-	struct wme_ac_parameter ac[4];
+/*
+ * WMM Parameter Element (used in Beacon, Probe Response, and (Re)Association
+ * Response frmaes)
+ */
+struct wmm_parameter_element {
+	/* Element ID: 221 (0xdd); Length: 24 */
+	/* required fields for WMM version 1 */
+	u8 oui[3]; /* 00:50:f2 */
+	u8 oui_type; /* 2 */
+	u8 oui_subtype; /* 1 */
+	u8 version; /* 1 for WMM version 1.0 */
+	u8 qos_info; /* AP/STA specif QoS info */
+	u8 reserved; /* 0 */
+	struct wmm_ac_parameter ac[4]; /* AC_BE, AC_BK, AC_VI, AC_VO */
 
 } __attribute__ ((packed));
 
-struct wme_tspec_info_element {
+/* WMM TSPEC Element */
+struct wmm_tspec_element {
 	u8 eid; /* 221 = 0xdd */
 	u8 length; /* 6 + 55 = 61 */
 	u8 oui[3]; /* 00:50:f2 */
@@ -105,20 +116,20 @@ struct wme_tspec_info_element {
 } __attribute__ ((packed));
 
 
-/* Access Categories */
+/* Access Categories / ACI to AC coding */
 enum {
-	WME_AC_BK = 1,
-	WME_AC_BE = 0,
-	WME_AC_VI = 2,
-	WME_AC_VO = 3
+	WMM_AC_BE = 0 /* Best Effort */,
+	WMM_AC_BK = 1 /* Background */,
+	WMM_AC_VI = 2 /* Video */,
+	WMM_AC_VO = 3 /* Voice */
 };
 
 struct ieee80211_mgmt;
 
-u8 * hostapd_eid_wme(struct hostapd_data *hapd, u8 *eid);
-int hostapd_eid_wme_valid(struct hostapd_data *hapd, u8 *eid, size_t len);
-int hostapd_wme_sta_config(struct hostapd_data *hapd, struct sta_info *sta);
-void hostapd_wme_action(struct hostapd_data *hapd, struct ieee80211_mgmt *mgmt,
+u8 * hostapd_eid_wmm(struct hostapd_data *hapd, u8 *eid);
+int hostapd_eid_wmm_valid(struct hostapd_data *hapd, u8 *eid, size_t len);
+int hostapd_wmm_sta_config(struct hostapd_data *hapd, struct sta_info *sta);
+void hostapd_wmm_action(struct hostapd_data *hapd, struct ieee80211_mgmt *mgmt,
 			size_t len);
 
 #endif /* WME_H */

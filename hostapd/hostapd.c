@@ -249,7 +249,7 @@ void hostapd_new_assoc_sta(struct hostapd_data *hapd, struct sta_info *sta,
 	if (!hapd->conf->ieee802_1x && !hapd->conf->wpa)
 		accounting_sta_start(hapd, sta);
 
-	hostapd_wme_sta_config(hapd, sta);
+	hostapd_wmm_sta_config(hapd, sta);
 
 	/* Start IEEE 802.1X authentication process for new stations */
 	ieee802_1x_new_station(hapd, sta);
@@ -306,7 +306,7 @@ static void hostapd_wpa_auth_conf(struct hostapd_bss_config *conf,
 	wconf->rsn_preauth = conf->rsn_preauth;
 	wconf->eapol_version = conf->eapol_version;
 	wconf->peerkey = conf->peerkey;
-	wconf->wme_enabled = conf->wme_enabled;
+	wconf->wmm_enabled = conf->wmm_enabled;
 	wconf->okc = conf->okc;
 #ifdef CONFIG_IEEE80211W
 	wconf->ieee80211w = conf->ieee80211w;
@@ -477,7 +477,7 @@ static void hostapd_dump_state(struct hostapd_data *hapd)
 			(sta->flags & WLAN_STA_SHORT_PREAMBLE ?
 			 "[SHORT_PREAMBLE]" : ""),
 			(sta->flags & WLAN_STA_PREAUTH ? "[PREAUTH]" : ""),
-			(sta->flags & WLAN_STA_WME ? "[WME]" : ""),
+			(sta->flags & WLAN_STA_WMM ? "[WMM]" : ""),
 			(sta->flags & WLAN_STA_MFP ? "[MFP]" : ""),
 			(sta->flags & WLAN_STA_WPS ? "[WPS]" : ""),
 			(sta->flags & WLAN_STA_MAYBE_WPS ? "[MAYBE_WPS]" : ""),
