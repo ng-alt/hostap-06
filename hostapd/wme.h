@@ -86,27 +86,29 @@ struct wme_parameter_element {
 } __attribute__ ((packed));
 
 struct wme_tspec_info_element {
-	u8 eid;
-	u8 length;
-	u8 oui[3];
-	u8 oui_type;
-	u8 oui_subtype;
-	u8 version;
-	u16 ts_info;
-	u16 nominal_msdu_size;
-	u16 maximum_msdu_size;
-	u32 minimum_service_interval;
-	u32 maximum_service_interval;
-	u32 inactivity_interval;
-	u32 start_time;
-	u32 minimum_data_rate;
-	u32 mean_data_rate;
-	u32 maximum_burst_size;
-	u32 minimum_phy_rate;
-	u32 peak_data_rate;
-	u32 delay_bound;
-	u16 surplus_bandwidth_allowance;
-	u16 medium_time;
+	u8 eid; /* 221 = 0xdd */
+	u8 length; /* 6 + 55 = 61 */
+	u8 oui[3]; /* 00:50:f2 */
+	u8 oui_type; /* 2 */
+	u8 oui_subtype; /* 2 */
+	u8 version; /* 1 */
+	/* WMM TSPEC body (55 octets): */
+	u8 ts_info[3];
+	le16 nominal_msdu_size;
+	le16 maximum_msdu_size;
+	le32 minimum_service_interval;
+	le32 maximum_service_interval;
+	le32 inactivity_interval;
+	le32 suspension_interval;
+	le32 service_start_time;
+	le32 minimum_data_rate;
+	le32 mean_data_rate;
+	le32 peak_data_rate;
+	le32 maximum_burst_size;
+	le32 delay_bound;
+	le32 minimum_phy_rate;
+	le16 surplus_bandwidth_allowance;
+	le16 medium_time;
 } __attribute__ ((packed));
 
 
