@@ -86,6 +86,125 @@ struct madwifi_driver_data {
 
 static int madwifi_sta_deauth(void *priv, const u8 *addr, int reason_code);
 
+/* hostapd 0.7.x compatibility - START */
+#include "ieee802_1x.h"
+#include "sta_info.h"
+#include "wpa.h"
+#include "radius/radius.h"
+#include "ieee802_11.h"
+#include "accounting.h"
+
+static int hostapd_notif_assoc(struct hostapd_data *hapd, const u8 *addr,
+			       const u8 *ie, size_t ielen)
+{
+	struct sta_info *sta;
+	int new_assoc, res;
+
+	hostapd_logger(hapd, addr, HOSTAPD_MODULE_IEEE80211,
+		       HOSTAPD_LEVEL_INFO, "associated");
+
+	sta = ap_get_sta(hapd, addr);
+	if (sta) {
+		accounting_sta_stop(hapd, sta);
+	} else {
+		sta = ap_sta_add(hapd, addr);
+		if (sta == NULL)
+			return -1;
+	}
+	sta->flags &= ~(WLAN_STA_WPS | WLAN_STA_MAYBE_WPS);
+
+	if (hapd->conf->wpa) {
+		if (ie == NULL || ielen == 0) {
+			if (hapd->conf->wps_state) {
+				wpa_printf(MSG_DEBUG, "STA did not include "
+					   "WPA/RSN IE in (Re)Association "
+					   "Request - possible WPS use");
+				sta->flags |= WLAN_STA_MAYBE_WPS;
+				goto skip_wpa_check;
+			}
+
+			wpa_printf(MSG_DEBUG, "No WPA/RSN IE from STA");
+			return -1;
+		}
+		if (hapd->conf->wps_state && ie[0] == 0xdd && ie[1] >= 4 &&
+		    os_memcmp(ie + 2, "\x00\x50\xf2\x04", 4) == 0) {
+			sta->flags |= WLAN_STA_WPS;
+			goto skip_wpa_check;
+		}
+
+		if (sta->wpa_sm == NULL)
+			sta->wpa_sm = wpa_auth_sta_init(hapd->wpa_auth,
+							sta->addr);
+		if (sta->wpa_sm == NULL) {
+			wpa_printf(MSG_ERROR, "Failed to initialize WPA state "
+				   "machine");
+			return -1;
+		}
+		res = wpa_validate_wpa_ie(hapd->wpa_auth, sta->wpa_sm,
+					  ie, ielen, NULL, 0);
+		if (res != WPA_IE_OK) {
+			wpa_printf(MSG_DEBUG, "WPA/RSN information element "
+				   "rejected? (res %u)", res);
+			wpa_hexdump(MSG_DEBUG, "IE", ie, ielen);
+			return -1;
+		}
+	} else if (hapd->conf->wps_state) {
+		if (ie && ielen > 4 && ie[0] == 0xdd && ie[1] >= 4 &&
+		    os_memcmp(ie + 2, "\x00\x50\xf2\x04", 4) == 0) {
+			sta->flags |= WLAN_STA_WPS;
+		} else
+			sta->flags |= WLAN_STA_MAYBE_WPS;
+	}
+skip_wpa_check:
+
+	new_assoc = (sta->flags & WLAN_STA_ASSOC) == 0;
+	sta->flags |= WLAN_STA_AUTH | WLAN_STA_ASSOC;
+	wpa_auth_sm_event(sta->wpa_sm, WPA_ASSOC);
+
+	hostapd_new_assoc_sta(hapd, sta, !new_assoc);
+
+	ieee802_1x_notify_port_enabled(sta->eapol_sm, 1);
+
+	return 0;
+}
+
+
+static void hostapd_notif_disassoc(struct hostapd_data *hapd, const u8 *addr)
+{
+	struct sta_info *sta;
+
+	hostapd_logger(hapd, addr, HOSTAPD_MODULE_IEEE80211,
+		       HOSTAPD_LEVEL_INFO, "disassociated");
+
+	sta = ap_get_sta(hapd, addr);
+	if (sta == NULL) {
+		wpa_printf(MSG_DEBUG, "Disassociation notification for "
+			   "unknown STA " MACSTR, MAC2STR(addr));
+		return;
+	}
+
+	sta->flags &= ~(WLAN_STA_AUTH | WLAN_STA_ASSOC);
+	wpa_auth_sm_event(sta->wpa_sm, WPA_DISASSOC);
+	sta->acct_terminate_cause = RADIUS_ACCT_TERMINATE_CAUSE_USER_REQUEST;
+	ieee802_1x_notify_port_enabled(sta->eapol_sm, 0);
+	ap_free_sta(hapd, sta);
+}
+
+
+static void hostapd_eapol_receive(struct hostapd_data *hapd, const u8 *sa,
+				  const u8 *buf, size_t len)
+{
+	ieee802_1x_receive(hapd, sa, buf, len);
+}
+
+
+static void hostapd_michael_mic_failure(struct hostapd_data *hapd,
+					const u8 *addr)
+{
+	ieee80211_michael_mic_failure(hapd, addr, 1);
+}
+/* hostapd 0.7.x compatibility - END */
+
 static int
 set80211priv(struct madwifi_driver_data *drv, int op, void *data, int len)
 {
