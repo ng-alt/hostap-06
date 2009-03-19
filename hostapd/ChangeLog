@@ -7,6 +7,8 @@ ChangeLog for hostapd
 	  authentication server
 	* driver_prism54: fixed segmentation fault on initialization
 	* fixed TNC with EAP-TTLS
+	* fixed IEEE 802.11r key derivation function to match with the standard
+	  (note: this breaks interoperability with previous version) [Bug 303]
 
 2009-02-15 - v0.6.8
 	* increased hostapd_cli ping interval to 5 seconds and made this

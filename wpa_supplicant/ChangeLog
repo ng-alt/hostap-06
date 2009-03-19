@@ -3,6 +3,8 @@ ChangeLog for wpa_supplicant
 ????-??-?? - v0.6.9
 	* driver_ndis: add PAE group address to the multicast address list to
 	  fix wired IEEE 802.1X authentication
+	* fixed IEEE 802.11r key derivation function to match with the standard
+	  (note: this breaks interoperability with previous version) [Bug 303]
 
 2009-02-15 - v0.6.8
 	* increased wpa_cli ping interval to 5 seconds and made this
