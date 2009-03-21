@@ -576,7 +576,9 @@ OBJS += ../src/eap_peer/eap_tnc.o
 OBJS += ../src/eap_peer/tncc.o
 NEED_BASE64=y
 ifndef CONFIG_NATIVE_WINDOWS
+ifndef CONFIG_DRIVER_BSD
 LIBS += -ldl
+endif
 endif
 endif
 
