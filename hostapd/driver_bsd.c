@@ -29,6 +29,7 @@
 #undef RSN_VERSION
 #undef WPA_VERSION
 #undef WPA_OUI_TYPE
+#undef WME_OUI_TYPE
 
 #include "hostapd.h"
 #include "driver.h"
