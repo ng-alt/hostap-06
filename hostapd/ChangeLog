@@ -1,5 +1,10 @@
 ChangeLog for hostapd
 
+????-??-?? - v0.6.10
+	* fixed SHA-256 based key derivation function to match with the
+	  standard when using CCMP (for IEEE 802.11r and IEEE 802.11w)
+	  (note: this breaks interoperability with previous version) [Bug 307]
+
 2009-03-23 - v0.6.9
 	* driver_nl80211: fixed STA accounting data collection (TX/RX bytes
 	  reported correctly; TX/RX packets not yet available from kernel)

@@ -1,5 +1,10 @@
 ChangeLog for wpa_supplicant
 
+????-??-?? - v0.6.10
+	* fixed SHA-256 based key derivation function to match with the
+	  standard when using CCMP (for IEEE 802.11r and IEEE 802.11w)
+	  (note: this breaks interoperability with previous version) [Bug 307]
+
 2009-03-23 - v0.6.9
 	* driver_ndis: add PAE group address to the multicast address list to
 	  fix wired IEEE 802.1X authentication
