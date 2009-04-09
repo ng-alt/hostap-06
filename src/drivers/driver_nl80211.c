@@ -2519,7 +2519,7 @@ static int phy_info_handler(struct nl_msg *msg, void *arg)
 
 			/* crude heuristic */
 			if (mode->channels[idx].freq < 4000) {
-				if (mode->channels[idx].freq == 2848)
+				if (mode->channels[idx].freq == 2484)
 					mode->channels[idx].chan = 14;
 				else
 					mode->channels[idx].chan =
