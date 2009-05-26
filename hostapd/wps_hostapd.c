@@ -699,7 +699,7 @@ void hostapd_deinit_wps(struct hostapd_data *hapd)
 
 
 int hostapd_wps_add_pin(struct hostapd_data *hapd, const char *uuid,
-			const char *pin)
+			const char *pin, int timeout)
 {
 	u8 u[UUID_LEN];
 	int any = 0;
@@ -711,7 +711,8 @@ int hostapd_wps_add_pin(struct hostapd_data *hapd, const char *uuid,
 	else if (uuid_str2bin(uuid, u))
 		return -1;
 	return wps_registrar_add_pin(hapd->wps->registrar, any ? NULL : u,
-				     (const u8 *) pin, os_strlen(pin));
+				     (const u8 *) pin, os_strlen(pin),
+				     timeout);
 }
 
 
