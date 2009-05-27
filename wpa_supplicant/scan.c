@@ -20,6 +20,7 @@
 #include "wpa_supplicant_i.h"
 #include "mlme.h"
 #include "wps_supplicant.h"
+#include "ctrl_iface_dbus.h"
 
 
 static void wpa_supplicant_gen_assoc_event(struct wpa_supplicant *wpa_s)
@@ -189,6 +190,8 @@ static void wpa_supplicant_scan(void *eloop_ctx, void *timeout_ctx)
 	}
 #endif /* CONFIG_WPS */
 
+	wpa_supplicant_notify_scanning(wpa_s, 1);
+
 	if (wpa_s->use_client_mlme) {
 		ieee80211_sta_set_probe_req_ie(wpa_s, extra_ie, extra_ie_len);
 		ret = ieee80211_sta_req_scan(wpa_s, ssid ? ssid->ssid : NULL,
@@ -203,6 +206,7 @@ static void wpa_supplicant_scan(void *eloop_ctx, void *timeout_ctx)
 
 	if (ret) {
 		wpa_printf(MSG_WARNING, "Failed to initiate AP scan.");
+		wpa_supplicant_notify_scanning(wpa_s, 0);
 		wpa_supplicant_req_scan(wpa_s, 10, 0);
 	} else
 		wpa_s->scan_runs++;
@@ -261,3 +265,14 @@ void wpa_supplicant_cancel_scan(struct wpa_supplicant *wpa_s)
 	wpa_msg(wpa_s, MSG_DEBUG, "Cancelling scan request");
 	eloop_cancel_timeout(wpa_supplicant_scan, wpa_s, NULL);
 }
+
+
+void wpa_supplicant_notify_scanning(struct wpa_supplicant *wpa_s,
+				    int scanning)
+{
+	if (wpa_s->scanning != scanning) {
+		wpa_s->scanning = scanning;
+		wpa_supplicant_dbus_notify_scanning(wpa_s);
+	}
+}
+
