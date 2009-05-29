@@ -220,6 +220,7 @@ ifdef CONFIG_EAP_AKA
 CFLAGS += -DEAP_AKA
 OBJS += ../src/eap_server/eap_aka.o
 CONFIG_EAP_SIM_COMMON=y
+NEED_SHA256=y
 endif
 
 ifdef CONFIG_EAP_AKA_PRIME
