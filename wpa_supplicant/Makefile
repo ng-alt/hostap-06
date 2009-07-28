@@ -857,7 +857,6 @@ CFLAGS += -DNEED_SHA256
 endif
 
 ifdef CONFIG_WIRELESS_EXTENSION
-CFLAGS += -DCONFIG_WIRELESS_EXTENSION
 OBJS_d += ../src/drivers/driver_wext.o
 endif
 
