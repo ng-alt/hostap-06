@@ -1877,7 +1877,7 @@ int main(int argc, char *argv[])
 	int ret = 1, k;
 	size_t i, j;
 	int c, debug = 0, daemonize = 0, tnc = 0;
-	const char *pid_file = NULL;
+	char *pid_file = NULL;
 
 	hostapd_logger_register_cb(hostapd_logger_cb);
 
@@ -1901,7 +1901,8 @@ int main(int argc, char *argv[])
 			wpa_debug_show_keys++;
 			break;
 		case 'P':
-			pid_file = optarg;
+			os_free(pid_file);
+			pid_file = os_rel2abs_path(optarg);
 			break;
 		case 't':
 			wpa_debug_timestamp++;
@@ -2032,6 +2033,7 @@ int main(int argc, char *argv[])
 	eap_server_unregister_methods();
 
 	os_daemonize_terminate(pid_file);
+	os_free(pid_file);
 
 	return ret;
 }
