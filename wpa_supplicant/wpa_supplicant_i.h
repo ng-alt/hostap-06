@@ -358,6 +358,10 @@ struct wpa_supplicant {
 	struct wps_context *wps;
 	int wps_success; /* WPS success event received */
 	int blacklist_cleared;
+
+	struct wpabuf *pending_eapol_rx;
+	struct os_time pending_eapol_rx_time;
+	u8 pending_eapol_rx_src[ETH_ALEN];
 };
 
 
