@@ -555,6 +555,7 @@ OBJS_h += ../src/eap_server/ikev2.o
 endif
 CONFIG_IEEE8021X_EAPOL=y
 NEED_DH_GROUPS=y
+NEED_DH_GROUPS_ALL=y
 endif
 
 ifdef CONFIG_EAP_VENDOR_TEST
@@ -976,6 +977,9 @@ endif
 
 ifdef NEED_DH_GROUPS
 OBJS += ../src/crypto/dh_groups.o
+ifdef NEED_DH_GROUPS_ALL
+CFLAGS += -DALL_DH_GROUPS
+endif
 endif
 
 ifndef NEED_FIPS186_2_PRF

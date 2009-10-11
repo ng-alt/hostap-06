@@ -307,6 +307,7 @@ CFLAGS += -DEAP_IKEV2
 OBJS += ../src/eap_server/eap_ikev2.o ../src/eap_server/ikev2.o
 OBJS += ../src/eap_common/eap_ikev2_common.o ../src/eap_common/ikev2_common.o
 NEED_DH_GROUPS=y
+NEED_DH_GROUPS_ALL=y
 endif
 
 ifdef CONFIG_EAP_TNC
@@ -499,6 +500,9 @@ endif
 
 ifdef NEED_DH_GROUPS
 OBJS += ../src/crypto/dh_groups.o
+ifdef NEED_DH_GROUPS_ALL
+CFLAGS += -DALL_DH_GROUPS
+endif
 endif
 
 ifndef NEED_FIPS186_2_PRF
