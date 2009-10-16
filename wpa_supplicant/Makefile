@@ -1238,6 +1238,7 @@ tests: test-ms_funcs test-sha1 test-aes test-eap_sim_common test-md4 test-md5
 clean:
 	$(MAKE) -C ../src clean
 	rm -f core *~ *.o *.d eap_*.so $(ALL) $(WINALL) eapol_test preauth_test
+	rm -f wpa_priv
 
 %.eps: %.fig
 	fig2dev -L eps $*.fig $*.eps
