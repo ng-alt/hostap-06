@@ -24,6 +24,7 @@
 #include "ieee802_11_defs.h"
 #include "wpas_glue.h"
 #include "eapol_supp/eapol_supp_sm.h"
+#include "wpa.h"
 
 extern int wpa_debug_level;
 extern int wpa_debug_show_keys;
@@ -1294,8 +1295,11 @@ DBusMessage * wpas_dbus_iface_set_smartcard_modules(
 	wpa_s->conf->pkcs11_module_path = pkcs11_module_path;
 #endif /* EAP_TLS_OPENSSL */
 
+	wpa_sm_set_eapol(wpa_s->wpa, NULL);
 	eapol_sm_deinit(wpa_s->eapol);
+	wpa_s->eapol = NULL;
 	wpa_supplicant_init_eapol(wpa_s);
+	wpa_sm_set_eapol(wpa_s->wpa, wpa_s->eapol);
 
 	return wpas_dbus_new_success_reply(message);
 
