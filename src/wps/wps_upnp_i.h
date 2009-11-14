@@ -172,7 +172,8 @@ int send_wpabuf(int fd, struct wpabuf *buf);
 /* wps_upnp_ssdp.c */
 void msearchreply_state_machine_stop(struct advertisement_state_machine *a);
 int advertisement_state_machine_start(struct upnp_wps_device_sm *sm);
-void advertisement_state_machine_stop(struct upnp_wps_device_sm *sm);
+void advertisement_state_machine_stop(struct upnp_wps_device_sm *sm,
+				      int send_byebye);
 void ssdp_listener_stop(struct upnp_wps_device_sm *sm);
 int ssdp_listener_start(struct upnp_wps_device_sm *sm);
 int add_ssdp_network(char *net_if);
