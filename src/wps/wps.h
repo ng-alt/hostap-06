@@ -42,7 +42,7 @@ struct upnp_wps_device_sm;
  * @key_idx: Key index
  * @key: Key
  * @key_len: Key length in octets
- * @mac_addr: MAC address of the peer
+ * @mac_addr: MAC address of the Credential receiver
  * @cred_attr: Unparsed Credential attribute data (used only in cred_cb());
  *	this may be %NULL, if not used
  * @cred_attr_len: Length of cred_attr in octets
