@@ -305,6 +305,7 @@ struct wpa_supplicant {
 	int mgmt_group_cipher;
 
 	void *drv_priv; /* private data used by driver_ops */
+	void *global_drv_priv;
 
 	struct wpa_ssid *prev_scan_ssid; /* previously scanned SSID;
 					  * NULL = not yet initialized (start
@@ -423,7 +424,8 @@ static inline void * wpa_drv_init(struct wpa_supplicant *wpa_s,
 				  const char *ifname)
 {
 	if (wpa_s->driver->init2)
-		return wpa_s->driver->init2(wpa_s, ifname, wpa_s->global);
+		return wpa_s->driver->init2(wpa_s, ifname,
+					    wpa_s->global_drv_priv);
 	if (wpa_s->driver->init) {
 		return wpa_s->driver->init(wpa_s, ifname);
 	}

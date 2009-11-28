@@ -1479,12 +1479,14 @@ static int wpa_supplicant_set_driver(struct wpa_supplicant *wpa_s,
 	if (name == NULL) {
 		/* default to first driver in the list */
 		wpa_s->driver = wpa_supplicant_drivers[0];
+		wpa_s->global_drv_priv = wpa_s->global->drv_priv[0];
 		return 0;
 	}
 
 	for (i = 0; wpa_supplicant_drivers[i]; i++) {
 		if (os_strcmp(name, wpa_supplicant_drivers[i]->name) == 0) {
 			wpa_s->driver = wpa_supplicant_drivers[i];
+			wpa_s->global_drv_priv = wpa_s->global->drv_priv[i];
 			return 0;
 		}
 	}
@@ -1944,6 +1946,8 @@ struct wpa_supplicant * wpa_supplicant_add_iface(struct wpa_global *global,
 	if (wpa_s == NULL)
 		return NULL;
 
+	wpa_s->global = global;
+
 	if (wpa_supplicant_init_iface(wpa_s, iface) ||
 	    wpa_supplicant_init_iface2(wpa_s)) {
 		wpa_printf(MSG_DEBUG, "Failed to add interface %s",
@@ -1952,8 +1956,6 @@ struct wpa_supplicant * wpa_supplicant_add_iface(struct wpa_global *global,
 		os_free(wpa_s);
 		return NULL;
 	}
-
-	wpa_s->global = global;
 
 	/* Register the interface with the dbus control interface */
 	if (wpas_dbus_register_iface(wpa_s)) {
