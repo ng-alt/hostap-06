@@ -117,7 +117,8 @@ wpa_hexdump_ascii(MSG_MSGDUMP, "RADIUS SRV: " args)
 
 
 static void radius_server_session_timeout(void *eloop_ctx, void *timeout_ctx);
-
+static void radius_server_session_remove_timeout(void *eloop_ctx,
+						 void *timeout_ctx);
 
 
 static struct radius_client *
@@ -179,6 +180,7 @@ static void radius_server_session_free(struct radius_server_data *data,
 				       struct radius_session *sess)
 {
 	eloop_cancel_timeout(radius_server_session_timeout, data, sess);
+	eloop_cancel_timeout(radius_server_session_remove_timeout, data, sess);
 	eap_server_sm_deinit(sess->eap);
 	if (sess->last_msg) {
 		radius_msg_free(sess->last_msg);
@@ -193,9 +195,6 @@ static void radius_server_session_free(struct radius_server_data *data,
 	data->num_sess--;
 }
 
-
-static void radius_server_session_remove_timeout(void *eloop_ctx,
-						 void *timeout_ctx);
 
 static void radius_server_session_remove(struct radius_server_data *data,
 					 struct radius_session *sess)
