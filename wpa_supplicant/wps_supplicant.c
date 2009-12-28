@@ -29,6 +29,7 @@
 #include "wpa.h"
 #include "wps_supplicant.h"
 
+
 #define WPS_PIN_SCAN_IGNORE_SEL_REG 3
 
 static void wpas_wps_timeout(void *eloop_ctx, void *timeout_ctx);
@@ -488,7 +489,7 @@ static struct wpa_ssid * wpas_wps_add_network(struct wpa_supplicant *wpa_s,
 
 	if (bssid) {
 		size_t i;
-		struct wpa_scan_res *res;
+		int count = 0;
 
 		os_memcpy(ssid->bssid, bssid, ETH_ALEN);
 		ssid->bssid_set = 1;
@@ -500,6 +501,7 @@ static struct wpa_ssid * wpas_wps_add_network(struct wpa_supplicant *wpa_s,
 
 		for (i = 0; i < wpa_s->scan_res->num; i++) {
 			const u8 *ie;
+			struct wpa_scan_res *res;
 
 			res = wpa_s->scan_res->res[i];
 			if (os_memcmp(bssid, res->bssid, ETH_ALEN) != 0)
@@ -514,7 +516,18 @@ static struct wpa_ssid * wpas_wps_add_network(struct wpa_supplicant *wpa_s,
 				break;
 			os_memcpy(ssid->ssid, ie + 2, ie[1]);
 			ssid->ssid_len = ie[1];
-			break;
+			wpa_hexdump_ascii(MSG_DEBUG, "WPS: Picked SSID from "
+					  "scan results",
+					  ssid->ssid, ssid->ssid_len);
+			count++;
+		}
+
+		if (count > 1) {
+			wpa_printf(MSG_DEBUG, "WPS: More than one SSID found "
+				   "for the AP; use wildcard");
+			os_free(ssid->ssid);
+			ssid->ssid = NULL;
+			ssid->ssid_len = 0;
 		}
 	}
 
