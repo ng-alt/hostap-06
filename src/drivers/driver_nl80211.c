@@ -1848,6 +1848,9 @@ static int wpa_driver_nl80211_get_range(void *priv)
 			drv->capa.enc |= WPA_DRIVER_CAPA_ENC_TKIP;
 		if (range->enc_capa & IW_ENC_CAPA_CIPHER_CCMP)
 			drv->capa.enc |= WPA_DRIVER_CAPA_ENC_CCMP;
+		drv->capa.auth = WPA_DRIVER_AUTH_OPEN |
+			WPA_DRIVER_AUTH_SHARED |
+			WPA_DRIVER_AUTH_LEAP;
 		wpa_printf(MSG_DEBUG, "  capabilities: key_mgmt 0x%x enc 0x%x",
 			   drv->capa.key_mgmt, drv->capa.enc);
 	} else {
