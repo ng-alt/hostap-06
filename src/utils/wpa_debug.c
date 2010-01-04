@@ -56,7 +56,7 @@ void wpa_debug_print_timestamp(void)
  *
  * Note: New line '\n' is added to the end of the text when printing to stdout.
  */
-void wpa_printf(int level, char *fmt, ...)
+void wpa_printf(int level, const char *fmt, ...)
 {
 	va_list ap;
 
@@ -267,7 +267,7 @@ void wpa_msg_register_cb(wpa_msg_cb_func func)
 }
 
 
-void wpa_msg(void *ctx, int level, char *fmt, ...)
+void wpa_msg(void *ctx, int level, const char *fmt, ...)
 {
 	va_list ap;
 	char *buf;
@@ -290,7 +290,7 @@ void wpa_msg(void *ctx, int level, char *fmt, ...)
 }
 
 
-void wpa_msg_ctrl(void *ctx, int level, char *fmt, ...)
+void wpa_msg_ctrl(void *ctx, int level, const char *fmt, ...)
 {
 	va_list ap;
 	char *buf;
