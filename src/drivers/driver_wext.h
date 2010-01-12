@@ -43,6 +43,8 @@ struct wpa_driver_wext_data {
 	char mlmedev[IFNAMSIZ + 1];
 
 	int scan_complete_events;
+
+	int cfg80211; /* whether driver is using cfg80211 */
 };
 
 int wpa_driver_wext_get_ifflags(struct wpa_driver_wext_data *drv, int *flags);
