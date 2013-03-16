@@ -1365,6 +1365,8 @@ DBusMessage * wpas_dbus_iface_get_scanning(DBusMessage *message,
 }
 
 
+#ifndef CONFIG_NO_CONFIG_BLOBS
+
 /**
  * wpas_dbus_iface_set_blobs - Store named binary blobs (ie, for certificates)
  * @message: Pointer to incoming dbus message
@@ -1489,3 +1491,5 @@ DBusMessage * wpas_dbus_iface_remove_blobs(DBusMessage *message,
 
 	return wpas_dbus_new_success_reply(message);
 }
+
+#endif /* CONFIG_NO_CONFIG_BLOBS */
