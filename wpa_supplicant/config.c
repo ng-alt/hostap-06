@@ -1024,7 +1024,7 @@ static char * wpa_config_write_eap(const struct parse_data *data,
 
 	return buf;
 }
-#endif /* NO_CONFIG_WRITE */
+#endif
 
 
 static int wpa_config_parse_password(const struct parse_data *data,
@@ -1114,7 +1114,7 @@ static char * wpa_config_write_password(const struct parse_data *data,
 
 	return buf;
 }
-#endif /* NO_CONFIG_WRITE */
+#endif
 #endif /* IEEE8021X_EAPOL */
 
 

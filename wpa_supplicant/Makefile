@@ -3,8 +3,9 @@ CC=gcc
 endif
 
 ifndef CFLAGS
-CFLAGS = -MMD -O2 -Wall -g
+CFLAGS = -MMD -Wall -g
 endif
+CFLAGS += $(EXTRACFLAGS)
 
 export LIBDIR ?= /usr/local/lib/
 export BINDIR ?= /usr/local/sbin/
@@ -14,6 +15,9 @@ CFLAGS += -I../src/crypto
 CFLAGS += -I../src/utils
 CFLAGS += -I../src/common
 CFLAGS += -I../src/rsn_supp
+
+CFLAGS += -ffunction-sections -fdata-sections
+LDFLAGS += -ffunction-sections -fdata-sections -Wl,--gc-sections
 
 ALL=wpa_supplicant wpa_passphrase wpa_cli
 
@@ -1013,6 +1017,10 @@ endif
 
 ifdef CONFIG_DEBUG_FILE
 CFLAGS += -DCONFIG_DEBUG_FILE
+endif
+
+ifdef CONFIG_DEBUG_SYSLOG
+CFLAGS += -DCONFIG_DEBUG_SYSLOG
 endif
 
 ifdef CONFIG_DELAYED_MIC_ERROR_REPORT
