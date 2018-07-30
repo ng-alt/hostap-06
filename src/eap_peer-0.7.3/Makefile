@@ -38,49 +38,46 @@ endif
 # wpa_supplicant directory
 override CFLAGS += -I ../../wpa_supplicant
 
-OBJS_both += ../utils/common.o
-OBJS_both += ../utils/os_unix.o
-OBJS_both += ../utils/wpa_debug.o
-OBJS_both += ../utils/base64.o
-OBJS_both += ../utils/wpabuf.o
-#OBJS_both += ../crypto/md5.o
-#OBJS_both += ../crypto/sha1.o
-#OBJS_both += ../crypto/sha1-tlsprf.o
-#OBJS_both += ../crypto/aes-encblock.o
-#OBJS_both += ../crypto/aes-wrap.o
-OBJS_both += ../crypto/aes_wrap.o
-OBJS_both += ../crypto/aes.o
-#OBJS_both += ../crypto/aes-ctr.o
-#OBJS_both += ../crypto/aes-eax.o
-#OBJS_both += ../crypto/aes-omac1.o
-OBJS_both += ../crypto/ms_funcs.o
-OBJS_both += ../crypto/sha256.o
+SRC_both += ../utils/common.c
+SRC_both += ../utils/os_unix.c
+SRC_both += ../utils/wpa_debug.c
+SRC_both += ../utils/base64.c
+SRC_both += ../utils/wpabuf.c
+SRC_both += ../crypto/md5.c
+SRC_both += ../crypto/rc4.c
+SRC_both += ../crypto/md4.c
+SRC_both += ../crypto/sha1.c
+SRC_both += ../crypto/des.c
+SRC_both += ../crypto/aes_wrap.c
+SRC_both += ../crypto/aes.c
+SRC_both += ../crypto/ms_funcs.c
+SRC_both += ../crypto/sha256.c
 
 
-OBJS_both += ../eap_common/eap_peap_common.o
-OBJS_both += ../eap_common/eap_psk_common.o
-OBJS_both += ../eap_common/eap_pax_common.o
-OBJS_both += ../eap_common/eap_sake_common.o
-OBJS_both += ../eap_common/eap_gpsk_common.o
-OBJS_both += ../eap_common/chap.o
+SRC_both += ../eap_common/eap_peap_common.c
+SRC_both += ../eap_common/eap_psk_common.c
+SRC_both += ../eap_common/eap_pax_common.c
+SRC_both += ../eap_common/eap_sake_common.c
+SRC_both += ../eap_common/eap_gpsk_common.c
+SRC_both += ../eap_common/chap.c
 
-OBJS_peer += ../eap_peer/eap_tls.o
-OBJS_peer += ../eap_peer/eap_peap.o
-OBJS_peer += ../eap_peer/eap_ttls.o
-OBJS_peer += ../eap_peer/eap_md5.o
-OBJS_peer += ../eap_peer/eap_mschapv2.o
-OBJS_peer += ../eap_peer/mschapv2.o
-OBJS_peer += ../eap_peer/eap_otp.o
-OBJS_peer += ../eap_peer/eap_gtc.o
-OBJS_peer += ../eap_peer/eap_leap.o
-OBJS_peer += ../eap_peer/eap_psk.o
-OBJS_peer += ../eap_peer/eap_pax.o
-OBJS_peer += ../eap_peer/eap_sake.o
-OBJS_peer += ../eap_peer/eap_gpsk.o
-OBJS_peer += ../eap_peer/eap.o
-OBJS_peer += ../eap_common/eap_common.o
-OBJS_peer += ../eap_peer/eap_methods.o
-OBJS_peer += ../eap_peer/eap_tls_common.o
+SRC_peer += ../eap_peer/eap_tls.c
+SRC_peer += ../eap_peer/eap_peap.c
+SRC_peer += ../eap_peer/eap_ttls.c
+SRC_peer += ../eap_peer/eap_md5.c
+SRC_peer += ../eap_peer/eap_mschapv2.c
+SRC_peer += ../eap_peer/mschapv2.c
+SRC_peer += ../eap_peer/eap_otp.c
+SRC_peer += ../eap_peer/eap_gtc.c
+SRC_peer += ../eap_peer/eap_leap.c
+SRC_peer += ../eap_peer/eap_psk.c
+SRC_peer += ../eap_peer/eap_pax.c
+SRC_peer += ../eap_peer/eap_sake.c
+SRC_peer += ../eap_peer/eap_gpsk.c
+SRC_peer += ../eap_peer/eap.c
+SRC_peer += ../eap_common/eap_common.c
+SRC_peer += ../eap_peer/eap_methods.c
+SRC_peer += ../eap_peer/eap_tls_common.c
 
 override CFLAGS += -DEAP_TLS
 override CFLAGS += -DEAP_PEAP
@@ -101,25 +98,25 @@ override CFLAGS += -DIEEE8021X_EAPOL
 ifeq ($(CONFIG_TLS), openssl)
 override CFLAGS += -DEAP_TLS_OPENSSL
 override CFLAGS += -I$(TOP)/openssl-1.0.0q/include
-OBJS_both += ../crypto/tls_openssl.o
-OBJS_both += ../crypto/crypto_openssl.o
+SRC_both += ../crypto/tls_openssl.c
+SRC_both += ../crypto/crypto_openssl.c
 LIBS += -L$(TARGET_DIR)/usr/lib -lssl -lcrypto
 override CFLAGS += -DINTERNAL_SHA256
 endif
 
 ifeq ($(CONFIG_TLS), internal)
-OBJS_both += ../crypto/tls_internal.o
-OBJS_both += ../tls/tlsv1_common.o ../../tls/tlsv1_record.o
-OBJS_both += ../tls/tlsv1_cred.o
-OBJS_both += ../tls/asn1.o ../../tls/x509v3.o
-OBJS_both += ../crypto/crypto_internal.o ../../tls/rsa.o ../../tls/bignum.o
+SRC_both += ../crypto/tls_internal.c
+SRC_both += ../tls/tlsv1_common.c ../../tls/tlsv1_record.c
+SRC_both += ../tls/tlsv1_cred.c
+SRC_both += ../tls/asn1.c ../../tls/x509v3.c
+SRC_both += ../crypto/crypto_internal.c ../../tls/rsa.c ../../tls/bignum.c
 
-OBJS_peer += ../tls/tlsv1_client.o
-OBJS_peer += ../tls/tlsv1_client_write.o ../../tls/tlsv1_client_read.o
+SRC_peer += ../tls/tlsv1_client.c
+SRC_peer += ../tls/tlsv1_client_write.c ../../tls/tlsv1_client_read.c
 override CFLAGS += -DCONFIG_TLS_INTERNAL_CLIENT
 
-OBJS_server += ../tls/tlsv1_server.o
-OBJS_server += ../tls/tlsv1_server_write.o ../../tls/tlsv1_server_read.o
+SRC_server += ../tls/tlsv1_server.c
+SRC_server += ../tls/tlsv1_server_write.c ../../tls/tlsv1_server_read.c
 override CFLAGS += -DCONFIG_TLS_INTERNAL_SERVER
 
 override CFLAGS += -DCONFIG_TLS_INTERNAL
@@ -143,9 +140,9 @@ LDO=$(CC)
 endif
 
 
-OBJS_lib=$(OBJS_both) $(OBJS_peer)
+OBJS_lib=$(addsuffix -eap.o,$(basename $(SRC_both) $(SRC_peer)))
 
- #$(OBJS_server)
+ #$(SRC_server)
 
 override CFLAGS  += -fPIC -DPIC
 LDFLAGS += -shared
@@ -155,6 +152,10 @@ endif
 
 $(LIBEAP): $(OBJS_lib)
 	$(LDO) $(LDFLAGS) $(OBJS_lib) -Wl,-soname -Wl,$(LIBEAP_SO) -o $(LIBEAP) $(LIBS)
+
+
+%-eap.o: %.c
+	$(CC) -c -o $@ $(CFLAGS) $<
 
 
 UTIL_HEADERS = ../utils/includes.h ../utils/common.h \

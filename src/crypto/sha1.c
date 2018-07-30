@@ -393,6 +393,7 @@ static void SHA1Final(unsigned char digest[20], struct SHA1Context *context);
 static void SHA1Transform(u32 state[5], const unsigned char buffer[64]);
 
 
+#ifndef CONFIG_CRYPTO_INTERNAL
 /**
  * sha1_vector - SHA-1 hash for data vector
  * @num_elem: Number of elements in the data vector
@@ -411,6 +412,7 @@ void sha1_vector(size_t num_elem, const u8 *addr[], const size_t *len,
 		SHA1Update(&ctx, addr[i], len[i]);
 	SHA1Final(mac, &ctx);
 }
+#endif
 
 
 #ifndef CONFIG_NO_FIPS186_2_PRF
